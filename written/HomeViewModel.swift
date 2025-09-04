@@ -112,9 +112,9 @@ extension HomeViewModel {
 
 // MARK: Entries methods
 extension HomeViewModel {
-    func getRandomPlaceholderText() -> String {
+    func setRandomPlaceholderText() {
         let text = placeholderOptions.randomElement() ?? "\n\nBegin writing"
-        return text.replacingOccurrences(of: "\n", with: "") + "..."
+        placeholderText = text.replacingOccurrences(of: "\n", with: "") + "..."
     }
 
     func createNewEntry() {

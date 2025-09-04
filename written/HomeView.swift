@@ -7,7 +7,12 @@
 
 import SwiftUI
 
+public typealias ActionVoid = () -> Void
+
 struct HomeView: View {
+    @Namespace private var namespace
+    @Namespace private var namespace2
+
     @State private var colorScheme: ColorScheme = .light
     @State private var showSettings = false
 
@@ -30,114 +35,150 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                TextField(
-                    "",
-                    text: $text,
-                    axis: .vertical
-                )
-                .overlay(alignment: .leading) {
-                    if text.isEmpty {
-                        Text(viewModel.getRandomPlaceholderText())
-                            .foregroundStyle(.secondary)
-                            .bold()
-                    }
-                }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                textfieldView
+
                 Spacer()
 
                 HStack {
-                    sendButton
-                    Spacer()
-                    if timerActive || timerPaused {
-                        stopButton
-                            .transition(.asymmetric(insertion: .move(edge: .trailing), removal: .opacity))
+                    sendButton {
+                        print("Sending to AI model...")
                     }
-                    timerButton
-                    settingsButton
+
+                    Spacer()
+
+                    GlassEffectContainer(spacing: 50) {
+                        HStack {
+                            if timerActive || timerPaused {
+                                stopButton {
+                                    timer?.invalidate()
+                                    timer = nil
+                                    timerActive = false
+                                    timerPaused = false
+                                    timerCount = 0
+                                }
+                                .glassEffectID(1, in: namespace)
+                            }
+                            timerButton {
+                                if !timerActive {
+                                    timerActive = true
+                                    timerPaused = false
+                                    timerCount = 0
+                                    timer?.invalidate()
+                                    timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                                        timerCount += 1
+                                        print("Timer: \(timerCount)s")
+                                    }
+                                } else if timerActive && !timerPaused {
+                                    timer?.invalidate()
+                                    timerPaused = true
+                                } else if timerActive && timerPaused {
+                                    timerPaused = false
+                                    timer?.invalidate()
+                                    timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                                        timerCount += 1
+                                        print("Timer: \(timerCount)s")
+                                    }
+                                }
+                            }
+                            .glassEffectID(2, in: namespace)
+                        }
+                    }
+                    .animation(.spring, value: timerActive || timerPaused)
+
+                    settingsButton {
+                        showSettings = true
+                    }
+                    .glassEffectID(3, in: namespace2)
                 }
-                .padding()
-                .animation(.spring(), value: timerActive || timerPaused)
+                .padding(.horizontal)
             }
             .navigationDestination(isPresented: $showSettings) {
                 SettingsView()
+            }
+            .onAppear {
+                viewModel.setRandomPlaceholderText()
             }
         }
     }
 }
 
 extension HomeView {
-    var settingsButton: some View {
-        Button(action: {
-            print("Gear tapped")
-            showSettings = true
-        }) {
-            Image(systemName: "gearshape")
-        }
-        .buttonStyle(.glass)
+    func settingsButton(
+        _ action: @escaping ActionVoid
+    ) -> some View {
+        Image(systemName: "gear")
+            .padding()
+            .foregroundStyle(.primary)
+            .glassEffect(.regular.interactive())
+            .onTapGesture {
+                action()
+            }
     }
 
-    var sendButton: some View {
-        Button(action: {
-            print("Sending to AI model...")
-        }) {
-            Label {
-                Text("Send")
-            } icon: {
-                Image(systemName: "paperplane")
-            }
+    func sendButton(
+        _ action: @escaping ActionVoid
+    ) -> some View {
+        HStack {
+            Image(systemName: "paperplane")
+            Text("Send")
         }
-        .buttonStyle(.glass)
+        .padding()
+        .foregroundStyle(.white)
+        .glassEffect(.regular.interactive().tint(.blue))
+        .onTapGesture {
+            action()
+        }
     }
 
-    var stopButton: some View {
-        Button(action: {
-            timer?.invalidate()
-            timer = nil
-            timerActive = false
-            timerPaused = false
-            timerCount = 0
-            print("Timer stopped and reset.")
-        }) {
-            Image(systemName: "stop.circle")
-        }
-        .frame(height: 44)
-        .buttonStyle(.glass)
+    func stopButton(
+        _ action: @escaping ActionVoid
+    ) -> some View {
+        Image(systemName: "stop.circle")
+            .padding()
+            .foregroundStyle(.primary)
+            .glassEffect(.regular.interactive())
+            .onTapGesture {
+                action()
+            }
     }
 
-    var timerButton: some View {
-        Button(action: {
-            if !timerActive {
-                timerActive = true
-                timerPaused = false
-                timerCount = 0
-                timer?.invalidate()
-                timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                    timerCount += 1
-                    print("Timer: \(timerCount)s")
-                }
-            } else if timerActive && !timerPaused {
-                timer?.invalidate()
-                timerPaused = true
-            } else if timerActive && timerPaused {
-                timerPaused = false
-                timer?.invalidate()
-                timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                    timerCount += 1
-                    print("Timer: \(timerCount)s")
-                }
+    var timerButtonImage: Image {
+        if !timerActive {
+            Image(systemName: "timer")
+        } else if timerPaused {
+            Image(systemName: "play.circle")
+        } else {
+            Image(systemName: "pause.circle")
+        }
+    }
+
+    func timerButton(
+        _ action: @escaping ActionVoid
+    ) -> some View {
+        timerButtonImage
+            .padding()
+            .foregroundStyle(.primary)
+            .glassEffect(.regular.interactive())
+            .onTapGesture {
+                action()
             }
-        }) {
-            if !timerActive {
-                Image(systemName: "timer")
-            } else if timerPaused {
-                Image(systemName: "play.circle")
-            } else {
-                Image(systemName: "pause.circle")
+    }
+
+    var textfieldView: some View {
+        TextField(
+            "",
+            text: $text,
+            axis: .vertical
+        )
+        .overlay(alignment: .leading) {
+            if text.isEmpty {
+                Text(viewModel.placeholderText)
+                    .foregroundStyle(.secondary)
+                    .bold()
             }
         }
-        .frame(height: 44)
-        .buttonStyle(.glass)
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
