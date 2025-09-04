@@ -40,24 +40,19 @@ struct HomeView: View {
                 Spacer()
 
                 HStack {
+                    settingsButton {
+                        showSettings = true
+                    }
+
                     sendButton {
                         print("Sending to AI model...")
                     }
+                    .animation(.spring, value: timerActive || timerPaused)
 
                     Spacer()
 
                     GlassEffectContainer(spacing: 50) {
                         HStack {
-                            if timerActive || timerPaused {
-                                stopButton {
-                                    timer?.invalidate()
-                                    timer = nil
-                                    timerActive = false
-                                    timerPaused = false
-                                    timerCount = 0
-                                }
-                                .glassEffectID(1, in: namespace)
-                            }
                             timerButton {
                                 if !timerActive {
                                     timerActive = true
@@ -81,14 +76,21 @@ struct HomeView: View {
                                 }
                             }
                             .glassEffectID(2, in: namespace)
+                            .glassEffectTransition(.matchedGeometry(properties: .position, anchor: .leading))
+                            if timerActive || timerPaused {
+                                stopButton {
+                                    timer?.invalidate()
+                                    timer = nil
+                                    timerActive = false
+                                    timerPaused = false
+                                    timerCount = 0
+                                }
+                                .glassEffectID(1, in: namespace)
+                                .glassEffectTransition(.matchedGeometry)
+                            }
                         }
                     }
                     .animation(.spring, value: timerActive || timerPaused)
-
-                    settingsButton {
-                        showSettings = true
-                    }
-                    .glassEffectID(3, in: namespace2)
                 }
                 .padding(.horizontal)
             }
@@ -102,6 +104,7 @@ struct HomeView: View {
     }
 }
 
+// MARK: Subviews
 extension HomeView {
     func settingsButton(
         _ action: @escaping ActionVoid
@@ -122,6 +125,7 @@ extension HomeView {
             Image(systemName: "paperplane")
             Text("Send")
         }
+        .frame(maxWidth: .infinity)
         .padding()
         .foregroundStyle(.white)
         .glassEffect(.regular.interactive().tint(.blue))
