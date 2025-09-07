@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 @Observable
 public class HomeViewModel {
@@ -13,8 +14,23 @@ public class HomeViewModel {
     var selectedEntryId: UUID? = nil
     var text: String = ""
     var placeholderText: String = ""
+    var trimmedText: String = ""
+
+    var gptFullText: String = ""
+    var claudeFullText: String = ""
+    var encodedGptText: String = ""
+    var encodedClaudeText: String = ""
+    var gptUrlLength: Int = 0
+    var claudeUrlLength: Int = 0
+    var isUrlTooLong: Bool = false
+    var timeRemaining: TimeInterval = 0
 
     // MARK: Constants
+    var formattedTime: String {
+        let minutes = Int(timeRemaining) / 60
+        let seconds = Int(timeRemaining) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     let placeholderOptions = [
         "\n\nBegin writing",
@@ -112,6 +128,24 @@ extension HomeViewModel {
 
 // MARK: Entries methods
 extension HomeViewModel {
+    func calculateURLLenghts() {
+        gptFullText = aiChatPrompt + "\n\n" + trimmedText
+        claudeFullText = claudePrompt + "\n\n" + trimmedText
+        encodedGptText = gptFullText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        encodedClaudeText = claudeFullText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        gptUrlLength = "https://chat.openai.com/?m=".count + encodedGptText.count
+        claudeUrlLength = "https://claude.ai/new?q=".count + encodedClaudeText.count
+        isUrlTooLong = gptUrlLength > 6000 || claudeUrlLength > 6000
+    }
+
+    func copyPromptToClipboard() {
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let fullText = aiChatPrompt + "\n\n" + trimmedText
+
+        UIPasteboard.general
+            .setValue(fullText, forPasteboardType: UTType.plainText.identifier)
+    }
+
     func setRandomPlaceholderText() {
         let text = placeholderOptions.randomElement() ?? "\n\nBegin writing"
         placeholderText = text.replacingOccurrences(of: "\n", with: "") + "..."
