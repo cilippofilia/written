@@ -20,14 +20,13 @@ struct HomeView: View {
 
     @State private var timerActive = false
     @State private var timerPaused = false
-    @State private var timerCount = 0
-    @State private var timer: Timer? = nil
 
     @State private var showTimers = false
     @State private var showingChatMenu = false
     @State private var didCopyPrompt = false
 
     let viewModel = HomeViewModel()
+    let timers: [Int] = [300, 600, 900, 1200, 1500, 1800]
 
     // Initialize with saved theme preference if available
     init() {
@@ -46,6 +45,17 @@ struct HomeView: View {
 
                 Spacer()
                     .frame(height: 30)
+
+                if timerActive || timerPaused {
+                    HStack {
+                        Image(systemName: "timer")
+                        Text(viewModel.formattedTimeLeft)
+                            .monospacedDigit()
+                    }
+                    .font(.caption)
+                    .bold()
+                    .foregroundStyle(Color.secondary)
+                }
 
                 HStack {
                     settingsButtonView {
@@ -68,24 +78,15 @@ struct HomeView: View {
                         HStack {
                             if !timerActive {
                                 Menu {
-                                    Button("60") {
-                                        viewModel.timeRemaining = 60
-                                        if !timerActive {
-                                            startTimer()
+                                    ForEach(timers, id: \.self) { timer in
+                                        Button("\(viewModel.formattedTime(for: timer))") {
+                                            viewModel.timeRemaining = Double(timer)
+                                            if !timerActive {
+                                                startTimer()
+                                            }
                                         }
                                     }
-                                    Button("120") {
-                                        viewModel.timeRemaining = 120
-                                        if !timerActive {
-                                            startTimer()
-                                        }
-                                    }
-                                    Button("180") {
-                                        viewModel.timeRemaining = 180
-                                        if !timerActive {
-                                            startTimer()
-                                        }
-                                    }
+                                    Text("How long for?")
                                 } label: {
                                     timerButtonImage
                                         .padding()
@@ -103,10 +104,8 @@ struct HomeView: View {
                                     .glassEffectID(2, in: namespace)
                                     .glassEffectTransition(.matchedGeometry(properties: .position, anchor: .leading))
                                     .onTapGesture {
-                                        if !timerActive {
+                                        if !timerActive || timerPaused {
                                             startTimer()
-                                        } else if timerPaused {
-                                            resumeTimer()
                                         } else {
                                             pauseTimer()
                                         }
@@ -132,6 +131,9 @@ struct HomeView: View {
             .onAppear {
                 viewModel.setRandomPlaceholderText()
             }
+            .background {
+                homeBackground()
+            }
         }
     }
 }
@@ -141,41 +143,55 @@ extension HomeView {
     func startTimer() {
         timerActive = true
         timerPaused = false
-        timerCount = 0
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(
+        viewModel.timer?.invalidate()
+        viewModel.timer = Timer.scheduledTimer(
             withTimeInterval: 1,
-            repeats: true
-        ) { _ in
-            timerCount += 1
-        }
+            repeats: true,
+            block: { _ in
+                viewModel.timeRemaining -= 1
+            })
     }
 
     func pauseTimer() {
-        timer?.invalidate()
+        viewModel.timer?.invalidate()
         timerPaused = true
     }
 
     func stopTimer() {
-        timer?.invalidate()
-        timer = nil
+        viewModel.timer?.invalidate()
+        viewModel.timer = nil
+        viewModel.timeRemaining = 0
         timerActive = false
         timerPaused = false
-        timerCount = 0
-    }
-
-    func resumeTimer() {
-        timerPaused = false
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            timerCount += 1
-            print("Timer: \(timerCount)s")
-        }
     }
 }
 
 // MARK: Subviews
 extension HomeView {
+    var transition: AnyTransition {
+        .asymmetric(
+            insertion: .opacity.combined(with: .move(edge: .top)),
+            removal: .opacity.combined(with: .move(edge: .bottom))
+        )
+    }
+
+    func homeBackground() -> some View {
+        TimelineView(.animation) { timeline in
+            let x = (sin(timeline.date.timeIntervalSince1970) + 1) / 2
+            MeshGradient(width: 3, height: 3, points: [
+                [0, 0], [0.5, 0], [1, 0],
+                [0, 0.5], [0.5, Float(x)], [1, 0.5],
+                [0, 1], [0.5, 1], [1, 1]
+            ], colors: [
+                .indigo, .cyan, .indigo,
+                .purple, .white, .purple,
+                .purple, .pink, .purple
+            ])
+            .opacity(0.4)
+            .ignoresSafeArea(.all)
+        }
+    }
+
     func settingsButtonView(
         _ action: @escaping ActionVoid
     ) -> some View {

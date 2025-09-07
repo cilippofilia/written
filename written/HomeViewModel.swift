@@ -23,15 +23,12 @@ public class HomeViewModel {
     var gptUrlLength: Int = 0
     var claudeUrlLength: Int = 0
     var isUrlTooLong: Bool = false
+
+    var timer: Timer? = nil
+    var saveTimer: Timer? = nil
     var timeRemaining: TimeInterval = 0
 
     // MARK: Constants
-    var formattedTime: String {
-        let minutes = Int(timeRemaining) / 60
-        let seconds = Int(timeRemaining) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     let placeholderOptions = [
         "\n\nBegin writing",
         "\n\nPick a thought and go",
@@ -45,7 +42,6 @@ public class HomeViewModel {
 
     let headerString = "\n\n"
     let fileManager = FileManager.default
-    let saveTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     // Add cached documents directory
     let documentsDirectory: URL = {
         let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("written")
@@ -66,6 +62,21 @@ public class HomeViewModel {
     // Modify getDocumentsDirectory to use cached value
     func getDocumentsDirectory() -> URL {
         return documentsDirectory
+    }
+}
+
+// MARK: Timer methods
+extension HomeViewModel {
+    func formattedTime(for timer: Int) -> String {
+        let minutes = timer / 60
+        let seconds = timer % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+
+    var formattedTimeLeft: String {
+        let minutes = Int(timeRemaining) / 60
+        let seconds = Int(timeRemaining) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 }
 
