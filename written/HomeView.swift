@@ -13,8 +13,6 @@ struct HomeView: View {
     @Namespace private var namespace
     @Namespace private var namespace2
 
-    @State var text: String = ""
-
     @State private var showSettings = false
     @State private var timerActive = false
     @State private var timerPaused = false
@@ -22,14 +20,12 @@ struct HomeView: View {
     @State private var didCopyPrompt = false
 
     let timers: [Int] = [300, 600, 900, 1200, 1500, 1800]
-    let viewModel = HomeViewModel()
+
+    @StateObject var viewModel = HomeViewModel()
 
     var body: some View {
         NavigationStack {
             VStack {
-                Spacer()
-                    .frame(height: 30)
-
                 textfieldView
 
                 Spacer()
@@ -112,6 +108,7 @@ struct HomeView: View {
                     .animation(.spring, value: timerActive || timerPaused)
                 }
                 .padding(.horizontal)
+                .padding(.bottom, 8)
             }
             .navigationDestination(isPresented: $showSettings) {
                 SettingsView()
@@ -226,11 +223,11 @@ extension HomeView {
     var textfieldView: some View {
         TextField(
             "",
-            text: $text,
+            text: $viewModel.text,
             axis: .vertical
         )
         .overlay(alignment: .leading) {
-            if text.isEmpty {
+            if viewModel.text.isEmpty {
                 Text(viewModel.placeholderText)
                     .foregroundStyle(.secondary)
                     .bold()
@@ -244,7 +241,7 @@ extension HomeView {
     func popoverSendContent() -> some View {
         if viewModel.isUrlTooLong {
             promptTooLongContent()
-        } else if text.count < 5 { // TODO: change this to 350
+        } else if viewModel.text.count < 5 { // TODO: change this to 350
             promptTooShortContent
         } else {
             aiModelsMenu()

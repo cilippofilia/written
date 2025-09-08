@@ -8,25 +8,24 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-@Observable
-public class HomeViewModel {
-    var entries: [HumanEntry] = []
-    var selectedEntryId: UUID? = nil
-    var text: String = ""
-    var placeholderText: String = ""
-    var trimmedText: String = ""
+public class HomeViewModel: ObservableObject {
+    @Published var entries: [HumanEntry] = []
+    @Published var selectedEntryId: UUID? = nil
+    @Published var text: String = loremIpsum
+    @Published var placeholderText: String = ""
+    @Published var trimmedText: String = ""
 
-    var gptFullText: String = ""
-    var claudeFullText: String = ""
-    var encodedGptText: String = ""
-    var encodedClaudeText: String = ""
-    var gptUrlLength: Int = 0
-    var claudeUrlLength: Int = 0
-    var isUrlTooLong: Bool = false
+    @Published var gptFullText: String = ""
+    @Published var claudeFullText: String = ""
+    @Published var encodedGptText: String = ""
+    @Published var encodedClaudeText: String = ""
+    @Published var gptUrlLength: Int = 0
+    @Published var claudeUrlLength: Int = 0
+    @Published var isUrlTooLong: Bool = false
 
-    var timer: Timer? = nil
-    var saveTimer: Timer? = nil
-    var timeRemaining: TimeInterval = 0
+    @Published var timer: Timer? = nil
+    @Published var saveTimer: Timer? = nil
+    @Published var timeRemaining: TimeInterval = 0
 
     // MARK: Constants
     let placeholderOptions = [
@@ -400,6 +399,9 @@ public extension HomeViewModel {
         if let encodedText = fullText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
            let url = URL(string: "https://claude.ai/new?q=" + encodedText) { }
     }
+
+    // TODO: make it open GROK
+    func useGrok() { }
 
     // TODO: make it open Apple Intelligence
     func useAppleIntelligence() { }
