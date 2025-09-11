@@ -212,15 +212,12 @@ extension HomeView {
             } label: {
                 Image(systemName: "line.3.horizontal")
                     .padding()
+                    .frame(height: 50)
                     .foregroundStyle(.primary)
             }
             .menuOrder(.priority)
             .buttonStyle(.plain)
-            .overlay {
-                Image(systemName: "line.3.horizontal")
-                    .padding()
-                    .foregroundStyle(.primary)
-            }
+            .glassEffect(.regular.interactive())
 
             // center menu
             Menu {
@@ -228,26 +225,23 @@ extension HomeView {
                 Button("B") { }
                 Button("C") { }
             } label: {
-                HStack {
-                    Image(systemName: "character.cursor.ibeam")
-                    Text("written")
+                HStack(alignment: .center, spacing: 0) {
+                    Image("written-logo")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                    Text("ritten")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
                 .frame(height: 50)
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.white)
             }
             .menuOrder(.priority)
             .buttonStyle(.plain)
-            .overlay {
-                HStack {
-                    Image(systemName: "character.cursor.ibeam")
-                    Text("written")
-                }
-            }
+            .glassEffect(.regular.tint(.blue).interactive())
 
-            HStack {
-                // right menu
+            // right menu
+            if !timerActive {
                 Menu {
                     ForEach(timers, id: \.self) { timer in
                         Button("\(viewModel.formattedTime(for: timer))") {
@@ -261,26 +255,39 @@ extension HomeView {
                 } label: {
                     timerButtonImage
                         .padding()
+                        .frame(height: 50)
                         .foregroundStyle(.primary)
                 }
                 .menuOrder(.priority)
                 .buttonStyle(.plain)
-                .overlay {
-                    timerButtonImage
-                        .padding()
-                        .foregroundStyle(.primary)
-                }
+                .glassEffect(.regular.interactive())
+            } else {
 
-                if timerActive {
-                    Button(action: {
-                        stopTimer()
-                    }) {
-                        Image(systemName: "stop.circle")
+                Button(action: {
+                    if !timerActive || timerPaused {
+                        startTimer()
+                    } else {
+                        pauseTimer()
                     }
-                    .padding()
-                    .frame(height: 50)
-                    .foregroundStyle(.primary)
+                }) {
+                    timerButtonImage
                 }
+                .padding()
+                .frame(height: 50)
+                .foregroundStyle(.primary)
+                .glassEffect(.regular.interactive())
+            }
+
+            if timerActive {
+                Button(action: {
+                    stopTimer()
+                }) {
+                    Image(systemName: "stop.circle")
+                }
+                .padding()
+                .frame(height: 50)
+                .foregroundStyle(.primary)
+                .glassEffect(.regular.interactive())
             }
         }
         .padding(.horizontal)
@@ -291,3 +298,4 @@ extension HomeView {
 #Preview {
     HomeView()
 }
+
