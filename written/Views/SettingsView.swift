@@ -10,7 +10,6 @@ import SwiftUI
 struct SettingsView: View {
     var body: some View {
         Text("SettingsView")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

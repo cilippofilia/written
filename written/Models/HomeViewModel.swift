@@ -9,7 +9,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 public class HomeViewModel: ObservableObject {
-    @Published var entries: [HumanEntry] = []
+    @Published var entries: [HumanEntryModel] = []
     @Published var selectedEntryId: UUID? = nil
     @Published var text: String = ""
     @Published var placeholderText: String = ""
@@ -111,7 +111,7 @@ extension HomeViewModel {
         }
     }
 
-    func updatePreviewText(for entry: HumanEntry) {
+    func updatePreviewText(for entry: HumanEntryModel) {
         let documentsDirectory = getDocumentsDirectory()
         let fileURL = documentsDirectory.appendingPathComponent(entry.filename)
 
@@ -163,7 +163,7 @@ extension HomeViewModel {
     }
 
     func createNewEntry() {
-        let newEntry = HumanEntry.createNew()
+        let newEntry = HumanEntryModel.createNew()
         entries.insert(newEntry, at: 0)
         selectedEntryId = newEntry.id
 
@@ -188,7 +188,7 @@ extension HomeViewModel {
         }
     }
 
-    func saveEntry(entry: HumanEntry) {
+    func saveEntry(entry: HumanEntryModel) {
         let documentsDirectory = getDocumentsDirectory()
         let fileURL = documentsDirectory.appendingPathComponent(entry.filename)
 
@@ -201,7 +201,7 @@ extension HomeViewModel {
         }
     }
 
-    func deleteEntry(entry: HumanEntry) {
+    func deleteEntry(entry: HumanEntryModel) {
         // Delete the file from the filesystem
         let documentsDirectory = getDocumentsDirectory()
         let fileURL = documentsDirectory.appendingPathComponent(entry.filename)
@@ -229,7 +229,7 @@ extension HomeViewModel {
         }
     }
 
-    func loadEntry(entry: HumanEntry) {
+    func loadEntry(entry: HumanEntryModel) {
         let documentsDirectory = getDocumentsDirectory()
         let fileURL = documentsDirectory.appendingPathComponent(entry.filename)
 
@@ -254,7 +254,7 @@ extension HomeViewModel {
             print("Found \(mdFiles.count) .md files")
 
             // Process each file
-            let entriesWithDates = mdFiles.compactMap { fileURL -> (entry: HumanEntry, date: Date, content: String)? in
+            let entriesWithDates = mdFiles.compactMap { fileURL -> (entry: HumanEntryModel, date: Date, content: String)? in
                 let filename = fileURL.lastPathComponent
                 print("Processing: \(filename)")
 
@@ -289,7 +289,7 @@ extension HomeViewModel {
                     let displayDate = dateFormatter.string(from: fileDate)
 
                     return (
-                        entry: HumanEntry(
+                        entry: HumanEntryModel(
                             id: uuid,
                             date: displayDate,
                             filename: filename,

@@ -10,12 +10,14 @@ import SwiftUI
 public typealias ActionVoid = () -> Void
 
 struct HomeView: View {
+    @FocusState private var isFocused: Bool
+
     @State private var timerActive: Bool = false
     @State private var timerPaused: Bool = false
 
     @State private var showTimeIsUpAlert: Bool = false
-    @State private var showingChatMenu: Bool = false
     @State private var showSettings: Bool = false
+    @State private var showWhyAI: Bool = false
 
     @State private var didCopyPrompt: Bool = false
 
@@ -43,13 +45,16 @@ struct HomeView: View {
                     footerView
                 }
             }
-            .navigationDestination(
-                isPresented: $showSettings,
-                destination: {
-                    SettingsView()
-                        .background(meshBackground())
-                }
-            )
+            .navigationDestination(isPresented: $showSettings) {
+                SettingsView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(meshBackground())
+            }
+            .navigationDestination(isPresented: $showWhyAI) {
+                WhyAIView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(meshBackground())
+            }
             .onAppear {
                 viewModel.setRandomPlaceholderText()
             }
@@ -114,20 +119,18 @@ extension HomeView {
     }
 
     var textfieldView: some View {
-        TextField(
-            "",
-            text: $viewModel.text,
-            axis: .vertical
-        )
-        .overlay(alignment: .leading) {
-            if viewModel.text.isEmpty {
-                Text(viewModel.placeholderText)
-                    .foregroundStyle(.secondary)
-                    .bold()
+        TextEditor(text: $viewModel.text)
+            .focused($isFocused)
+            .padding(.leading, 9)
+            .overlay(alignment: .topLeading) {
+                if viewModel.text.isEmpty {
+                    Text(viewModel.placeholderText)
+                        .foregroundStyle(.secondary)
+                        .padding([.leading, .top], 9)
+                }
             }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .scrollContentBackground(.hidden)
     }
 
     @ViewBuilder
@@ -137,7 +140,7 @@ extension HomeView {
         } else if viewModel.text.count < 350 {
             promptTooShortContent
         } else {
-            aiModelsMenu()
+            Text("Sending prompt to AI...")
         }
     }
 
@@ -173,26 +176,25 @@ extension HomeView {
         Text("Please free write for at minimum 5 minutes first. Then click this. Trust the process.")
     }
 
-    // View for normal text length
-    func aiModelsMenu() -> some View {
-        VStack {
-            Button(action: {
-                showingChatMenu = false
-                viewModel.openChatGPT()
-            }) {
-                Text("ChatGPT")
+    var settingsButtonView: some View {
+        Button(action: {
+            showSettings = true
+        }) {
+            HStack {
+                Image(systemName: "gear")
+                Text("Settings")
             }
-            .buttonStyle(.plain)
+        }
+    }
 
-            Button(action: {
-                showingChatMenu = false
-                viewModel.openClaude()
-            }) {
-                Text("Claude")
+    var whyAIButtonView: some View {
+        Button(action: {
+            showWhyAI = true
+        }) {
+            HStack {
+                Image(systemName: "sparkles")
+                Text("Why AI?")
             }
-            .buttonStyle(.plain)
-
-            copyPromptButtonView()
         }
     }
 }
@@ -203,14 +205,8 @@ extension HomeView {
         HStack {
             // left menu
             Menu {
-                Button(action: {
-                    showSettings = true
-                }) {
-                    HStack {
-                        Image(systemName: "gear")
-                        Text("Settings")
-                    }
-                }
+                settingsButtonView
+                whyAIButtonView
             } label: {
                 Image(systemName: "line.3.horizontal")
                     .padding()
@@ -221,25 +217,22 @@ extension HomeView {
             .buttonStyle(.plain)
             .glassEffect(.regular.interactive())
 
-            // center menu
-            Menu {
-                Button("A") { }
-                Button("B") { }
-                Button("C") { }
-            } label: {
-                HStack(alignment: .center, spacing: 0) {
-                    Image("written-logo")
+            // center button
+            Button(action: {
+                print("Sending to AI...")
+            }) {
+                HStack(alignment: .center, spacing: 10) {
+                    Image(systemName: "paperplane")
                         .resizable()
                         .frame(width: 20, height: 20)
-                    Text("ritten")
+
+                    Text("Send")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .frame(height: 50)
+                .frame(height: 55)
                 .foregroundStyle(Color.white)
             }
-            .menuOrder(.priority)
-            .buttonStyle(.plain)
             .glassEffect(.regular.tint(.blue).interactive())
 
             // right menu
