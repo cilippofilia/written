@@ -21,9 +21,9 @@ struct HomeView: View {
 
     @State private var didCopyPrompt: Bool = false
 
-    let timers: [Int] = [300, 600, 900, 1200, 1500, 1800]
-
     @StateObject var viewModel = HomeViewModel()
+
+    let timers: [Int] = [5, 300, 600, 900, 1200, 1500, 1800]
 
     var body: some View {
         NavigationStack {
@@ -131,17 +131,6 @@ extension HomeView {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .scrollContentBackground(.hidden)
-    }
-
-    @ViewBuilder
-    func popoverSendContent() -> some View {
-        if viewModel.isUrlTooLong {
-            promptTooLongContent()
-        } else if viewModel.text.count < 350 {
-            promptTooShortContent
-        } else {
-            Text("Sending prompt to AI...")
-        }
     }
 
     func copyPromptButtonView() -> some View {
