@@ -10,18 +10,20 @@ import SwiftUI
 public typealias ActionVoid = () -> Void
 
 struct HomeView: View {
+    @Environment(HomeViewModel.self) var viewModel
+
     @FocusState private var isFocused: Bool
+
+    @State private var text: String = ""
+    @State private var prompt: String = ""
 
     @State private var timerActive: Bool = false
     @State private var timerPaused: Bool = false
 
     @State private var showTimeIsUpAlert: Bool = false
-    @State private var showSettings: Bool = false
     @State private var showWhyAI: Bool = false
 
     @State private var didCopyPrompt: Bool = false
-
-    @StateObject var viewModel = HomeViewModel()
 
     let timers: [Int] = [5, 300, 600, 900, 1200, 1500, 1800]
 
@@ -29,7 +31,6 @@ struct HomeView: View {
         NavigationStack {
             VStack {
                 textfieldView
-
                 if timerActive || timerPaused {
                     HStack {
                         Image(systemName: "timer")
@@ -44,11 +45,6 @@ struct HomeView: View {
                 GlassEffectContainer {
                     footerView
                 }
-            }
-            .navigationDestination(isPresented: $showSettings) {
-                SettingsView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(meshBackground())
             }
             .sheet(isPresented: $showWhyAI) {
                 WhyAIView(action: { showWhyAI = false })
@@ -120,61 +116,21 @@ extension HomeView {
     }
 
     var textfieldView: some View {
-        TextEditor(text: $viewModel.text)
+        TextEditor(text: $text)
             .focused($isFocused)
-            .padding(.leading, 9)
+            .padding(.leading, 8)
             .overlay(alignment: .topLeading) {
-                if viewModel.text.isEmpty {
+                if text.isEmpty {
                     Text(viewModel.placeholderText)
                         .foregroundStyle(.secondary)
-                        .padding([.leading, .top], 9)
+                        .padding(.leading)
+                        .padding(.top, 8)
+                        .opacity(isFocused ? 0.2 : 1)
+                        .animation(.easeInOut, value: $isFocused.wrappedValue)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .scrollContentBackground(.hidden)
-    }
-
-    func copyPromptButtonView() -> some View {
-        Button(action: {
-            viewModel.copyPromptToClipboard()
-            withAnimation {
-                didCopyPrompt = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    didCopyPrompt = false
-                }
-            }
-        }) {
-            Label(didCopyPrompt ? "Copied!" : "Copy Prompt", systemImage: didCopyPrompt ? "checkmark" : "document.on.document")
-                .padding()
-        }
-    }
-
-    // View for long text (URL too long)
-    func promptTooLongContent() -> some View {
-        VStack {
-            Spacer()
-            Text("Hey, your entry is long. It'll break the URL. Instead, copy prompt by clicking below and paste into AI of your choice!")
-                .padding()
-
-            copyPromptButtonView()
-
-            Spacer()
-        }
-    }
-
-    var promptTooShortContent: some View {
-        Text("Please free write for at minimum 5 minutes first. Then click this. Trust the process.")
-    }
-
-    var settingsButtonView: some View {
-        Button(action: {
-            showSettings = true
-        }) {
-            HStack {
-                Image(systemName: "gear")
-                Text("Settings")
-            }
-        }
     }
 
     var whyAIButtonView: some View {
@@ -195,7 +151,6 @@ extension HomeView {
         HStack {
             // left menu
             Menu {
-                settingsButtonView
                 whyAIButtonView
             } label: {
                 Image(systemName: "line.3.horizontal")
@@ -247,7 +202,6 @@ extension HomeView {
                 .buttonStyle(.plain)
                 .glassEffect(.regular.interactive())
             } else {
-
                 Button(action: {
                     if !timerActive || timerPaused {
                         startTimer()
@@ -282,4 +236,6 @@ extension HomeView {
 
 #Preview {
     HomeView()
+        .environment(HomeViewModel())
 }
+

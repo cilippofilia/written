@@ -20,7 +20,17 @@ struct WhyAIView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    Spacer()
+                    Button( action: action) {
+                        Image(systemName: "xmark")
+                            .foregroundStyle(.secondary)
+                            .bold()
+                    }
+                    .buttonStyle(.plain)
+                }
+
                 HStack(spacing: 0) {
                     Text("Why using ")
 
@@ -34,20 +44,11 @@ struct WhyAIView: View {
 
                     Text("?")
                 }
+                .frame(maxWidth: .infinity, alignment: .center)
                 Text(analogy)
                 Text(explanation)
             }
             .padding(.horizontal)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Image(systemName: "xmark")
-                        .foregroundStyle(.secondary)
-                        .onTapGesture {
-                            action()
-                        }
-                }
-            }
-
         }
     }
 }

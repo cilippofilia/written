@@ -9,6 +9,7 @@ import FoundationModels
 import SwiftUI
 
 struct AvailabilityView: View {
+    @State private var homeVM: HomeViewModel = HomeViewModel()
     private var model = SystemLanguageModel.default
 
     var body: some View {
@@ -16,6 +17,7 @@ struct AvailabilityView: View {
             switch model.availability {
             case .available:
                 HomeView()
+                    .environment(homeVM)
             case .unavailable(.modelNotReady):
                 Text("This model is not ready yet. Please try again later.")
             case .unavailable(.appleIntelligenceNotEnabled):
