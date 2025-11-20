@@ -19,38 +19,27 @@ struct WhyAIView: View {
     """
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                HStack(spacing: 0) {
-                    Spacer()
-                    Button( action: action) {
-                        Image(systemName: "xmark")
-                            .foregroundStyle(.secondary)
-                            .bold()
-                    }
-                    .buttonStyle(.plain)
-                    .padding(4)
-                }
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                Text("Why using ")
 
-                HStack(spacing: 0) {
-                    Text("Why using ")
+                Image(systemName: "apple.intelligence")
+                    .symbolRenderingMode(.multicolor)
 
-                    Image(systemName: "apple.intelligence")
-                        .symbolRenderingMode(.multicolor)
+                Link("Apple Intelligence", destination: URL(string: "https://www.apple.com/apple-intelligence/")!)
+                    .tint(.primary)
+                    .bold()
+                    .underline(true, color: .secondary)
 
-                    Link("Apple Intelligence", destination: URL(string: "https://www.apple.com/apple-intelligence/")!)
-                        .tint(.primary)
-                        .bold()
-                        .underline(true, color: .secondary)
-
-                    Text("?")
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                Text(analogy)
-                Text(explanation)
+                Text("?")
             }
-            .padding(.horizontal)
+            .frame(maxWidth: .infinity, alignment: .center)
+
+            Text(analogy)
+            Text(explanation)
         }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding()
     }
 }
 

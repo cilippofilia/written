@@ -9,12 +9,9 @@ import SwiftUI
 
 @main
 struct writtenApp: App {
-    @State private var themeManager = ThemeManager()
-
     var body: some Scene {
         WindowGroup {
             AvailabilityView()
         }
-        .environment(themeManager)
     }
 }

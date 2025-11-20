@@ -11,7 +11,6 @@ public typealias ActionVoid = () -> Void
 
 struct HomeView: View {
     @Environment(HomeViewModel.self) var viewModel
-    @Environment(ThemeManager.self) var themeManager: ThemeManager
 
     @FocusState private var isFocused: Bool
 
@@ -51,21 +50,21 @@ struct HomeView: View {
             .navigationDestination(isPresented: $showSettings) {
                 SettingsView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    
             }
             .sheet(isPresented: $showWhyAI) {
                 WhyAIView(action: { showWhyAI = false })
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.ultraThinMaterial)
                     .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+
             }
             .onAppear {
                 viewModel.setRandomPlaceholderText()
             }
             .background {
-                if themeManager.useGradientBackground {
-                    themeManager.backgroundGradient
-                        .ignoresSafeArea()
-                }
+                meshBackgroundGradient
             }
             .alert(isPresented: $showTimeIsUpAlert) {
                 Alert(
@@ -258,5 +257,4 @@ extension HomeView {
 #Preview {
     HomeView()
         .environment(HomeViewModel())
-        .environment(ThemeManager())
 }
