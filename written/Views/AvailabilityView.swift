@@ -9,7 +9,10 @@ import FoundationModels
 import SwiftUI
 
 struct AvailabilityView: View {
+    @Environment(ThemeManager.self) var themeManager
+
     @State private var homeVM: HomeViewModel = HomeViewModel()
+
     private var model = SystemLanguageModel.default
 
     var body: some View {
@@ -32,11 +35,15 @@ struct AvailabilityView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background {
-            meshBackground()
+            if themeManager.useGradientBackground {
+                themeManager.backgroundGradient
+                    .ignoresSafeArea()
+            }
         }
     }
 }
 
 #Preview {
     AvailabilityView()
+        .environment(ThemeManager())
 }

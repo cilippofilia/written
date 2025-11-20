@@ -29,6 +29,7 @@ struct WhyAIView: View {
                             .bold()
                     }
                     .buttonStyle(.plain)
+                    .padding(4)
                 }
 
                 HStack(spacing: 0) {

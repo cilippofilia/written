@@ -10,6 +10,7 @@ import SwiftUI
 public typealias ActionVoid = () -> Void
 
 struct HomeView: View {
+    @Environment(ThemeManager.self) var themeManager
     @Environment(HomeViewModel.self) var viewModel
 
     @FocusState private var isFocused: Bool
@@ -22,6 +23,7 @@ struct HomeView: View {
 
     @State private var showTimeIsUpAlert: Bool = false
     @State private var showWhyAI: Bool = false
+    @State private var showSettings: Bool = false
 
     @State private var didCopyPrompt: Bool = false
 
@@ -46,6 +48,10 @@ struct HomeView: View {
                     footerView
                 }
             }
+            .navigationDestination(isPresented: $showSettings) {
+                SettingsView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
             .sheet(isPresented: $showWhyAI) {
                 WhyAIView(action: { showWhyAI = false })
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -56,7 +62,10 @@ struct HomeView: View {
                 viewModel.setRandomPlaceholderText()
             }
             .background {
-                meshBackground()
+                if themeManager.useGradientBackground {
+                    themeManager.backgroundGradient
+                        .ignoresSafeArea()
+                }
             }
             .alert(isPresented: $showTimeIsUpAlert) {
                 Alert(
@@ -133,6 +142,17 @@ extension HomeView {
             .scrollContentBackground(.hidden)
     }
 
+    var settingsButtonView: some View {
+        Button(action: {
+            showSettings = true
+        }) {
+            HStack {
+                Image(systemName: "gear")
+                Text("Settings")
+            }
+        }
+    }
+
     var whyAIButtonView: some View {
         Button(action: {
             showWhyAI = true
@@ -151,6 +171,7 @@ extension HomeView {
         HStack {
             // left menu
             Menu {
+                settingsButtonView
                 whyAIButtonView
             } label: {
                 Image(systemName: "line.3.horizontal")
@@ -237,5 +258,5 @@ extension HomeView {
 #Preview {
     HomeView()
         .environment(HomeViewModel())
+        .environment(ThemeManager())
 }
-

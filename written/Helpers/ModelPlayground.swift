@@ -10,10 +10,17 @@ import Playgrounds
 import SwiftUI
 
 #Playground {
+    let promptOptions: [String] = [
+        reflectivePrompt,
+        insightfulPrompt,
+        actionableSuggestionPrompt,
+        validatingPrompt,
+        challengingPrompt
+    ]
     let session = LanguageModelSession {
-        reflectivePrompt
+        promptOptions.randomElement() ?? reflectivePrompt
     }
-    let userInput = "i've been feeling really down today because i had a fight with my mum. i know she means good for me but sometimes it feels like she's projecting her own insecurities onto me, trying to dictate me. and when i push back, she gets frustrated. i know we're okay but i'm just feeling down about it and i'd like some help processing it"
+    let userInput = ""
     let response = try await session.respond(to: userInput)
     var errorResponse = ""
     do {
