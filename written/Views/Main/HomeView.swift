@@ -63,9 +63,6 @@ struct HomeView: View {
             .onAppear {
                 viewModel.setRandomPlaceholderText()
             }
-            .background {
-                meshBackgroundGradient
-            }
             .alert(isPresented: $showTimeIsUpAlert) {
                 Alert(
                     title: Text("Time is up!"),
@@ -191,7 +188,7 @@ extension HomeView {
                         .resizable()
                         .frame(width: 20, height: 20)
 
-                    Text("Send")
+                    Text("SenD")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
