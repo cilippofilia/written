@@ -188,7 +188,7 @@ extension HomeView {
                         .resizable()
                         .frame(width: 20, height: 20)
 
-                    Text("SenD")
+                    Text("Send")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
