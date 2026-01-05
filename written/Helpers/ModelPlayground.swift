@@ -20,8 +20,7 @@ import SwiftUI
     let session = LanguageModelSession {
         promptOptions.randomElement() ?? reflectivePrompt
     }
-    let userInput = ""
-    let response = try await session.respond(to: userInput)
+    let userInput = "I am feeling sad. today is cold. there are -30°C outside."
     var errorResponse = ""
     do {
         let response = try await session.respond(to: userInput)

@@ -8,26 +8,37 @@
 import SwiftUI
 
 struct SendButtonView: View {
+    let isResponding: Bool
+    let isInputEmpty: Bool
+    let sendAction: () -> Void
+
     var body: some View {
         Button(action: {
-            print("Sending to AI...")
+            sendAction()
         }) {
-            HStack(alignment: .center, spacing: 10) {
-                Image(systemName: "paperplane")
-                    .resizable()
+            if isResponding == true {
+                ProgressView()
                     .frame(width: 20, height: 20)
+            } else {
+                HStack(alignment: .center, spacing: 10) {
+                    Image(systemName: "paperplane")
+                        .resizable()
+                        .frame(width: 20, height: 20)
 
-                Text("Send")
+                    Text("Send")
+                }
             }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .frame(height: 55)
-            .foregroundStyle(Color.white)
         }
-        .glassEffect(.regular.tint(.blue).interactive())
+        .frame(maxWidth: .infinity)
+        .padding()
+        .frame(height: 55)
+        .foregroundStyle(Color.white)
+        .glassEffect(.regular.tint(isResponding || isInputEmpty ? .secondary : .blue).interactive())
+        .animation(.easeInOut, value: isResponding)
+        .animation(.easeInOut, value: isInputEmpty)
     }
 }
 
 #Preview {
-    SendButtonView()
+    SendButtonView(isResponding: true, isInputEmpty: true, sendAction: { })
 }
