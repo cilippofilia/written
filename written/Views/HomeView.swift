@@ -30,15 +30,6 @@ struct HomeView: View {
                     CountdownView(showTimeIsUpAlert: $showTimeIsUpAlert)
                 }
             }
-            .overlay {
-                if viewModel.isResponding {
-                    Image(systemName: "brain")
-                        .symbolRenderingMode(.multicolor)
-                        .symbolColorRenderingMode(.gradient)
-                        .padding()
-                        .background(.ultraThinMaterial)
-                }
-            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     GlassEffectContainer {
