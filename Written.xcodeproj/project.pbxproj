@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		18A488EE2E68BD5F00A87380 /* written.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = written.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18A488EE2E68BD5F00A87380 /* Written.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Written.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		18A488F02E68BD5F00A87380 /* written */ = {
+		18A488F02E68BD5F00A87380 /* Written */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = written;
+			path = Written;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		18A488E52E68BD5F00A87380 = {
 			isa = PBXGroup;
 			children = (
-				18A488F02E68BD5F00A87380 /* written */,
+				18A488F02E68BD5F00A87380 /* Written */,
 				18A488EF2E68BD5F00A87380 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		18A488EF2E68BD5F00A87380 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				18A488EE2E68BD5F00A87380 /* written.app */,
+				18A488EE2E68BD5F00A87380 /* Written.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		18A488ED2E68BD5F00A87380 /* written */ = {
+		18A488ED2E68BD5F00A87380 /* Written */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 18A488FA2E68BD6000A87380 /* Build configuration list for PBXNativeTarget "written" */;
+			buildConfigurationList = 18A488FA2E68BD6000A87380 /* Build configuration list for PBXNativeTarget "Written" */;
 			buildPhases = (
 				18A488FE2E68BD6000A87380 /* SwiftLint */,
 				18A488EA2E68BD5F00A87380 /* Sources */,
@@ -62,13 +62,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				18A488F02E68BD5F00A87380 /* written */,
+				18A488F02E68BD5F00A87380 /* Written */,
 			);
-			name = written;
+			name = Written;
 			packageProductDependencies = (
 			);
 			productName = written;
-			productReference = 18A488EE2E68BD5F00A87380 /* written.app */;
+			productReference = 18A488EE2E68BD5F00A87380 /* Written.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -86,7 +86,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 18A488E92E68BD5F00A87380 /* Build configuration list for PBXProject "written" */;
+			buildConfigurationList = 18A488E92E68BD5F00A87380 /* Build configuration list for PBXProject "Written" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -100,7 +100,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				18A488ED2E68BD5F00A87380 /* written */,
+				18A488ED2E68BD5F00A87380 /* Written */,
 			);
 		};
 /* End PBXProject section */
@@ -286,7 +286,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = written;
+				INFOPLIST_KEY_CFBundleDisplayName = Written;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -302,15 +302,15 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = cilia.filippo.written;
+				PRODUCT_BUNDLE_IDENTIFIER = cilia.filippo.Written;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Debug;
@@ -333,7 +333,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = written;
+				INFOPLIST_KEY_CFBundleDisplayName = Written;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -349,15 +349,15 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = cilia.filippo.written;
+				PRODUCT_BUNDLE_IDENTIFIER = cilia.filippo.Written;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				XROS_DEPLOYMENT_TARGET = 2.5;
 			};
 			name = Release;
@@ -365,7 +365,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		18A488E92E68BD5F00A87380 /* Build configuration list for PBXProject "written" */ = {
+		18A488E92E68BD5F00A87380 /* Build configuration list for PBXProject "Written" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				18A488F82E68BD6000A87380 /* Debug */,
@@ -374,7 +374,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		18A488FA2E68BD6000A87380 /* Build configuration list for PBXNativeTarget "written" */ = {
+		18A488FA2E68BD6000A87380 /* Build configuration list for PBXNativeTarget "Written" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				18A488FB2E68BD6000A87380 /* Debug */,
