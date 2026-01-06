@@ -27,8 +27,10 @@ struct HomeView: View {
     @State private var showLowCharacterCountAlert: Bool = false
     @State private var showWhyAI: Bool = false
     @State private var showSettings: Bool = false
+    @State private var showOverlay: Bool = false
 
     @State private var session: LanguageModelSession? = nil
+    @State private var shouldSend: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -37,6 +39,11 @@ struct HomeView: View {
 
                 if viewModel.timerActive || viewModel.timerPaused {
                     CountdownView(showTimeIsUpAlert: $showTimeIsUpAlert)
+                }
+            }
+            .overlay {
+                if showOverlay {
+                    RespondingIndicator()
                 }
             }
             .toolbar {
@@ -64,12 +71,21 @@ struct HomeView: View {
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
                     .transition(.opacity)
+                    .onAppear {
+                        showOverlay = false
+                    }
                     .onDisappear {
                         session = nil
+                        text = ""
                     }
             }
             .onAppear {
                 viewModel.setRandomPlaceholderText()
+            }
+            .task(id: shouldSend) {
+                guard shouldSend else { return }
+                await performSend()
+                shouldSend = false
             }
             .alert(isPresented: $showTimeIsUpAlert) {
                 Alert(
@@ -145,7 +161,6 @@ extension HomeView {
                 isResponding: session?.isResponding ?? false,
                 isInputEmpty: text.isEmpty,
                 sendAction: {
-                    if text.count < 150 { showLowCharacterCountAlert = true }
                     handleSendTapped()
                 }
             )
@@ -163,13 +178,13 @@ extension HomeView {
 extension HomeView {
     @MainActor
     private func handleSendTapped() {
-        Task {
-            await performSend()
-        }
+        shouldSend = true
     }
 
     @MainActor
     private func performSend() async {
+        showOverlay = true
+
         let input = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !input.isEmpty else { return }
 
@@ -198,6 +213,7 @@ extension HomeView {
             }
             showAIGenerationAlert = true
         }
+        showOverlay = false
     }
 
     private func prepareSessionIfNeeded() {
