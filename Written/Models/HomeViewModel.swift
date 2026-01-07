@@ -20,9 +20,7 @@ public class HomeViewModel {
     var selectedPrompt: PromptModel
     var session: LanguageModelSession?
 
-    init(
-        selectedPrompt: PromptModel? = nil
-    ) {
+    init(selectedPrompt: PromptModel? = nil) {
         self.selectedPrompt = selectedPrompt ?? promptOptions.first!
     }
 
