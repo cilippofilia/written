@@ -8,13 +8,23 @@
 import SwiftUI
 
 struct MenuButtonView: View {
+    let selectedPrompt: Binding<PromptModel>
+    let prompts: [PromptModel]
     let showWhyAISheet: Binding<Bool>
 
     var body: some View {
         Group {
             Menu {
-                Text("Prompt types")
-                Text("History")
+                Label("History", systemImage: "clock.arrow.circlepath")
+                Menu {
+                    Picker("Prompt types", selection: selectedPrompt) {
+                        ForEach(prompts, id: \.self) { promptModel in
+                            Text(promptModel.title)
+                        }
+                    }
+                } label: {
+                    Label("Prompt types", systemImage: "brain")
+                }
                 Divider()
                 whyAIButtonView(action: {
                     showWhyAISheet.wrappedValue = true
@@ -43,5 +53,9 @@ struct MenuButtonView: View {
 }
 
 #Preview {
-    MenuButtonView(showWhyAISheet: .constant(false))
+    MenuButtonView(
+        selectedPrompt: .constant(PromptModel(id: "", title: "", prompt: "")),
+        prompts: [],
+        showWhyAISheet: .constant(false)
+    )
 }

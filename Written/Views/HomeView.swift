@@ -11,10 +11,12 @@ import FoundationModels
 public typealias ActionVoid = () -> Void
 
 struct HomeView: View {
+    @AppStorage("selectedPromptID") private var selectedPromptID: String = ""
     @Environment(HomeViewModel.self) var viewModel
 
     @FocusState private var isFocused: Bool
 
+    @State private var selectedPrompt: PromptModel = PromptModel.init(id: "", title: "", prompt: "")
     @State private var text: String  = ""
     @State private var aiAnswer: String  = ""
     @State private var errorTitle: String? = nil
@@ -49,7 +51,11 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     GlassEffectContainer {
-                        MenuButtonView(showWhyAISheet: $showWhyAI)
+                        MenuButtonView(
+                            selectedPrompt: $selectedPrompt,
+                            prompts: viewModel.promptOptions,
+                            showWhyAISheet: $showWhyAI
+                        )
                     }
                 }
             }
@@ -82,10 +88,25 @@ struct HomeView: View {
             .onAppear {
                 viewModel.setRandomPlaceholderText()
             }
+            .task(id: viewModel.promptOptions) {
+                if let match = viewModel.promptOptions.first(where: { $0.id == selectedPromptID }) {
+                    selectedPrompt = match
+                    prepareSessionIfNeeded()
+                } else if let first = viewModel.promptOptions.first {
+                    selectedPrompt = first
+                    selectedPromptID = first.id
+                    prepareSessionIfNeeded()
+                }
+            }
             .task(id: shouldSend) {
                 guard shouldSend else { return }
                 await performSend()
                 shouldSend = false
+            }
+            .onChange(of: selectedPrompt) { _, newValue in
+                selectedPromptID = newValue.id
+                session = nil
+                prepareSessionIfNeeded()
             }
             .alert(isPresented: $showTimeIsUpAlert) {
                 Alert(
@@ -210,7 +231,7 @@ extension HomeView {
     private func prepareSessionIfNeeded() {
         if session == nil {
             session = LanguageModelSession(
-                instructions: { viewModel.promptOptions.first }
+                instructions: { selectedPrompt.prompt }
             )
         }
     }

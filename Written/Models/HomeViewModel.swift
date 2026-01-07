@@ -27,8 +27,8 @@ public class HomeViewModel {
         "Start with one sentence",
         "Just say it"
     ]
-
-    let promptOptions: [String] = [
+    
+    let promptOptions: [PromptModel] = [
         reflectivePrompt,
         insightfulPrompt,
         actionableSuggestionPrompt,
