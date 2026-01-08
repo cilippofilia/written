@@ -17,11 +17,11 @@ public class HomeViewModel {
     var timerPausedElapsed: TimeInterval = 0
     var timerActive: Bool = false
     var timerPaused: Bool = false
-    var selectedPrompt: AIModel
+    var selectedAIModel: AIModel
     var session: LanguageModelSession?
 
     init(selectedPrompt: AIModel? = nil) {
-        self.selectedPrompt = selectedPrompt ?? promptOptions.first!
+        self.selectedAIModel = selectedPrompt ?? aiModelList.first!
     }
 
     let placeholderOptions: [String] = [
@@ -35,7 +35,7 @@ public class HomeViewModel {
         "Just say it"
     ]
     
-    let promptOptions: [AIModel] = [
+    let aiModelList: [AIModel] = [
         reflectivePrompt,
         insightfulPrompt,
         actionableSuggestionPrompt,
@@ -110,27 +110,27 @@ public class HomeViewModel {
         timerPaused = false
     }
     
-    func prepareInitialState(storedPromptID: String) {
+    func prepareInitialState(storedModelID: String) {
         setRandomPlaceholderText()
 
-        if let match = promptOptions.first(where: { $0.id == storedPromptID }) {
-            selectedPrompt = match
-        } else if let first = promptOptions.first {
-            selectedPrompt = first
+        if let match = aiModelList.first(where: { $0.id == storedModelID }) {
+            selectedAIModel = match
+        } else if let first = aiModelList.first {
+            selectedAIModel = first
         }
 
         prepareSessionIfNeeded()
     }
 
     func updateSelection(to prompt: AIModel) {
-        selectedPrompt = prompt
+        selectedAIModel = prompt
         prepareSessionIfNeeded()
     }
 
     private func prepareSessionIfNeeded() {
         if session == nil {
             session = LanguageModelSession(
-                instructions: { selectedPrompt.prompt }
+                instructions: { selectedAIModel.prompt }
             )
         }
     }

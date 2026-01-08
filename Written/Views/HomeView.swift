@@ -11,7 +11,7 @@ import SwiftUI
 public typealias ActionVoid = () -> Void
 
 struct HomeView: View {
-    @AppStorage("selectedPromptID") private var selectedPromptID: String = ""
+    @AppStorage("selectedPromptID") private var selectedModelID: String = ""
 
     @Environment(HomeViewModel.self) var viewModel
 
@@ -52,14 +52,14 @@ struct HomeView: View {
                     GlassEffectContainer {
                         MenuButtonView(
                             selectedModel: .init(
-                                get: { viewModel.selectedPrompt },
+                                get: { viewModel.selectedAIModel },
                                 set: { viewModel.updateSelection(to: $0) }
                             ),
-                            models: viewModel.promptOptions,
+                            aiModels: viewModel.aiModelList,
                             showWhyAISheet: $showWhyAI
                         )
-                        .onChange(of: viewModel.selectedPrompt) { _, newPrompt in
-                            selectedPromptID = newPrompt.id
+                        .onChange(of: viewModel.selectedAIModel) { _, newModel in
+                            selectedModelID = newModel.id
                         }
                     }
                 }
@@ -91,7 +91,7 @@ struct HomeView: View {
                     }
             }
             .onAppear {
-                viewModel.prepareInitialState(storedPromptID: selectedPromptID)
+                viewModel.prepareInitialState(storedModelID: selectedModelID)
             }
             .task(id: shouldSend) {
                 guard shouldSend else { return }
@@ -129,7 +129,6 @@ struct HomeView: View {
         }
     }
 }
-
 
 // MARK: Subviews
 extension HomeView {
