@@ -66,7 +66,7 @@ final class CountdownViewModel {
         expirationCheckTask = Task {
             while !Task.isCancelled && timerActive && !timerPaused {
                 let remaining = timeRemaining(at: .now)
-                if remaining < 1 {
+                if remaining <= 0 {
                     timerExpired = true
                     stopTimer()
                     break

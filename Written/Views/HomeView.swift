@@ -62,9 +62,7 @@ struct HomeView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                GlassEffectContainer {
-                    footerView
-                }
+                footerView
             }
             .sheet(isPresented: $showWhyAISheet) {
                 WhyAIView(action: { showWhyAISheet = false })

@@ -13,27 +13,17 @@ struct TimerButtonView: View {
     let timers: [Int] = [5, 300, 600, 900, 1200, 1500, 1800]
     
     var body: some View {
-        Group {
-            if !viewModel.timerActive {
-                timerMenuView
-            } else {
-                pauseResumeButton
-                stopButton
+        GlassEffectContainer {
+            Group {
+                if !viewModel.timerActive {
+                    timerMenuView
+                } else {
+                    stopButton
+                }
             }
         }
     }
-    
-    @ViewBuilder
-    private var timerButtonImage: some View {
-        if !viewModel.timerActive {
-            Image(systemName: "timer")
-        } else if viewModel.timerPaused {
-            Image(systemName: "play.circle")
-        } else {
-            Image(systemName: "pause.circle")
-        }
-    }
-    
+
     private var timerMenuView: some View {
         Menu {
             ForEach(timers, id: \.self) { timer in
@@ -48,32 +38,17 @@ struct TimerButtonView: View {
 
             Text("How long for?")
         } label: {
-            timerButtonImage
+            Image(systemName: "timer")
                 .padding()
                 .frame(height: 50)
                 .foregroundStyle(.primary)
+                .contentTransition(.symbolEffect(.replace))
         }
         .menuOrder(.priority)
         .buttonStyle(.plain)
         .glassEffect(.regular.interactive())
     }
-    
-    private var pauseResumeButton: some View {
-        Button(action: {
-            if viewModel.timerPaused {
-                viewModel.resumeTimer()
-            } else {
-                viewModel.pauseTimer()
-            }
-        }) {
-            timerButtonImage
-        }
-        .padding()
-        .frame(height: 50)
-        .foregroundStyle(.primary)
-        .glassEffect(.regular.interactive())
-    }
-    
+
     private var stopButton: some View {
         Button(action: {
             viewModel.stopTimer()
@@ -83,6 +58,7 @@ struct TimerButtonView: View {
         .padding()
         .frame(height: 50)
         .foregroundStyle(.primary)
+        .contentTransition(.symbolEffect(.replace))
         .glassEffect(.regular.interactive())
     }
 }
