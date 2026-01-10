@@ -17,7 +17,7 @@ struct CountdownView: View {
                 Image(systemName: "timer")
                 Text(viewModel.formattedTime(for: Int(remaining)))
                     .contentTransition(.numericText(value: remaining))
-                    .animation(.bouncy, value: remaining)
+                    .animation(.smooth, value: remaining)
                     .monospacedDigit()
             }
             .font(.caption)

@@ -1,5 +1,5 @@
 //
-//  TimerButtonView.swift
+//  TimerMenuButtonView.swift
 //  written
 //
 //  Created by Filippo Cilia on 12/12/2025.
@@ -7,12 +7,33 @@
 
 import SwiftUI
 
-struct TimerButtonView: View {
+struct TimerMenuButtonView: View {
     @Environment(CountdownViewModel.self) var viewModel
 
     let timers: [Int] = [5, 300, 600, 900, 1200, 1500, 1800]
     
     var body: some View {
+        Group {
+            if viewModel.timerActive {
+                Button(action: {
+                    viewModel.stopTimer()
+                }) {
+                    Image(systemName: viewModel.timerActive ? "stop.circle" : "timer")
+                        .padding()
+                        .frame(height: 50)
+                        .foregroundStyle(.primary)
+                        .glassEffect(.regular.interactive())
+                        .contentTransition(.symbolEffect(.replace))
+                }
+                .buttonStyle(.plain)
+            } else {
+                menuView
+            }
+        }
+    }
+
+    @ViewBuilder
+    var menuView: some View {
         Menu {
             ForEach(timers, id: \.self) { timer in
                 Button {
@@ -40,6 +61,6 @@ struct TimerButtonView: View {
 }
 
 #Preview {
-    TimerButtonView()
+    TimerMenuButtonView()
         .environment(CountdownViewModel())
 }

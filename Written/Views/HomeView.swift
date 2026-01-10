@@ -150,7 +150,7 @@ extension HomeView {
             .disabled(viewModel.session?.isResponding ?? false)
             .disabled(text.isEmpty)
 
-            TimerButtonView()
+            TimerMenuButtonView()
         }
         .padding(.horizontal)
         .padding(.bottom, 8)

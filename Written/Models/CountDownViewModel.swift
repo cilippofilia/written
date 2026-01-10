@@ -5,7 +5,7 @@
 //  Created by Filippo Cilia on 08/01/2026.
 //
 
-import Foundation
+import SwiftUI
 
 @Observable
 @MainActor
@@ -18,29 +18,37 @@ final class CountdownViewModel {
     private var expirationCheckTask: Task<Void, Never>?
 
     func startTimer(duration: TimeInterval) {
-        endTime = Date.now.addingTimeInterval(duration)
-        timerActive = true
-        timerPaused = false
-        timerExpired = false
+        withAnimation(.smooth) {
+            endTime = Date.now.addingTimeInterval(duration)
+            timerActive = true
+            timerPaused = false
+            timerExpired = false
 
-        startExpirationCheck()
+            startExpirationCheck()
+        }
     }
 
     func pauseTimer() {
-        timerPaused = true
-        expirationCheckTask?.cancel()
+        withAnimation(.smooth) {
+            timerPaused = true
+            expirationCheckTask?.cancel()
+        }
     }
 
     func resumeTimer() {
-        timerPaused = false
-        startExpirationCheck()
+        withAnimation(.smooth) {
+            timerPaused = false
+            startExpirationCheck()
+        }
     }
 
     func stopTimer() {
-        timerActive = false
-        timerPaused = false
-        endTime = nil
-        expirationCheckTask?.cancel()
+        withAnimation(.smooth) {
+            timerActive = false
+            timerPaused = false
+            endTime = nil
+            expirationCheckTask?.cancel()
+        }
     }
 
     func timeRemaining(at date: Date) -> TimeInterval {
