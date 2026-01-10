@@ -9,6 +9,11 @@ import FoundationModels
 import Playgrounds
 import SwiftUI
 
+/*
+ UNUSED: Development-only playground code. This is not used at runtime by the app.
+ Consider excluding from release builds or moving to a dedicated sample/testing target.
+*/
+#if DEBUG
 #Playground {
     let promptOptions: [AIModel] = [
         reflectivePrompt,
@@ -49,3 +54,4 @@ import SwiftUI
         }
     }
 }
+#endif

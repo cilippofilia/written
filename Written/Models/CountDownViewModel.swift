@@ -28,6 +28,7 @@ final class CountdownViewModel {
         }
     }
 
+    // UNUSED: Not referenced in the current UI; consider removing if not needed.
     func pauseTimer() {
         withAnimation(.smooth) {
             timerPaused = true
@@ -35,6 +36,7 @@ final class CountdownViewModel {
         }
     }
 
+    // UNUSED: Not referenced in the current UI; consider removing if not needed.
     func resumeTimer() {
         withAnimation(.smooth) {
             timerPaused = false
@@ -56,17 +58,12 @@ final class CountdownViewModel {
         return endTime.timeIntervalSince(date)
     }
 
-    func formattedTime(for seconds: Int) -> String {
-        let absoluteSeconds = abs(seconds)
-        let hours = absoluteSeconds / 3600
-        let minutes = (absoluteSeconds % 3600) / 60
-        let secs = absoluteSeconds % 60
-
-        if hours > 0 {
-            return String(format: "%d:%02d:%02d", hours, minutes, secs)
-        } else {
-            return String(format: "%d:%02d", minutes, secs)
-        }
+    func formattedTime(for timer: Int) -> String {
+        let minutes = timer / 60
+        let seconds = timer % 60
+        let minutesString = minutes < 10 ? "0\(minutes)" : "\(minutes)"
+        let secondsString = seconds < 10 ? "0\(seconds)" : "\(seconds)"
+        return "\(minutesString):\(secondsString)"
     }
 
     private func startExpirationCheck() {
