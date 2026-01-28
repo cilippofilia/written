@@ -12,7 +12,7 @@ struct AIGeneratedAnswerView: View {
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: true) {
-            Text(answer)
+            Text(.init(answer))
                 .padding()
                 .padding(.vertical, 50)
                 .foregroundStyle(.primary)
