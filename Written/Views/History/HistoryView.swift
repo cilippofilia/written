@@ -36,14 +36,14 @@ struct HistoryView: View {
                 .background(.ultraThinMaterial)
                 .clipShape(.rect(cornerRadius: 12, style: .continuous))
                 .contentShape(.rect(cornerRadius: 12, style: .continuous))
-                .listRowInsets(.init(top: 12, leading: 12, bottom: 0, trailing: 12))
+                .listRowInsets(.init(top: 6, leading: 12, bottom: 0, trailing: 6))
                 .listRowSeparator(.hidden)
             }
         }
         .navigationTitle(Text("History"))
-        .navigationDestination(for: Int.self) { promptNumber in
-            PromptDetailView(promptNumber: promptNumber)
-        }
+//        .navigationDestination(for: Int.self) { promptNumber in
+//            PromptDetailView(promptNumber: promptNumber)
+//        }
         .listStyle(.plain)
     }
 
