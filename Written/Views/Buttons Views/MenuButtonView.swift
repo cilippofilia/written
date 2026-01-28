@@ -11,13 +11,13 @@ struct MenuButtonView: View {
     let selectedModel: Binding<AIModel>
     let aiModels: [AIModel]
     let showWhyAISheet: Binding<Bool>
+    let showHistoryView: Binding<Bool>
 
     var body: some View {
         Group {
             Menu {
                 // TODO: ideas to implement
                 Label("Onboarding", systemImage: "book.pages")
-                Label("History", systemImage: "clock.arrow.circlepath")
 
                 Menu {
                     Picker("", selection: selectedModel) {
@@ -29,6 +29,12 @@ struct MenuButtonView: View {
                     Label("Model types", systemImage: "brain")
                 }
 
+                Button(action: {
+                    showHistoryView.wrappedValue = true
+                }) {
+                    Label("History", systemImage: "clock.arrow.circlepath")
+                }
+
                 Divider()
 
                 // Why AI
@@ -37,7 +43,6 @@ struct MenuButtonView: View {
                 }) {
                     Label("Why AI?", systemImage: "sparkles")
                 }
-
             } label: {
                 Button(
                     "Menu",
@@ -59,6 +64,7 @@ struct MenuButtonView: View {
     MenuButtonView(
         selectedModel: .constant(AIModel(id: "", title: "", prompt: "")),
         aiModels: [],
-        showWhyAISheet: .constant(false)
+        showWhyAISheet: .constant(false),
+        showHistoryView: .constant(false)
     )
 }

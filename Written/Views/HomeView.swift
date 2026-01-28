@@ -26,6 +26,7 @@ struct HomeView: View {
 
     @State private var showAIGeneratedAnswer: Bool = false
     @State private var showWhyAISheet: Bool = false
+    @State private var showHistoryView: Bool = false
     @State private var showOverlayView: Bool = false
 
     @State private var shouldSend: Bool = false
@@ -53,7 +54,8 @@ struct HomeView: View {
                                 set: { viewModel.updateSelection(to: $0) }
                             ),
                             aiModels: viewModel.aiModelList,
-                            showWhyAISheet: $showWhyAISheet
+                            showWhyAISheet: $showWhyAISheet,
+                            showHistoryView: $showHistoryView
                         )
                         .onChange(of: viewModel.selectedAIModel) { _, newModel in
                             selectedModelID = newModel.id
@@ -84,6 +86,9 @@ struct HomeView: View {
                         viewModel.session = nil
                         text = ""
                     }
+            }
+            .navigationDestination(isPresented: $showHistoryView) {
+                HistoryView()
             }
             .onAppear {
                 viewModel.prepareInitialState(storedModelID: selectedModelID)
