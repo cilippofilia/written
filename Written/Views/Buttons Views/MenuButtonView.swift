@@ -8,55 +8,49 @@
 import SwiftUI
 
 struct MenuButtonView: View {
-    let selectedModel: Binding<AIModel>
+    @Binding var selectedModel: AIModel
     let aiModels: [AIModel]
-    let showWhyAISheet: Binding<Bool>
-    let showHistoryView: Binding<Bool>
+    @Binding var showWhyAISheet: Bool
+    @Binding var showHistoryView: Bool
 
     var body: some View {
-        Group {
+        Menu {
+            Label("Onboarding", systemImage: "book.pages")
+
             Menu {
                 // TODO: ideas to implement
                 Label("Onboarding", systemImage: "book.pages")
 
-                Menu {
-                    Picker("", selection: selectedModel) {
-                        ForEach(aiModels, id: \.self) { model in
-                            Text(model.title)
-                        }
+                Picker("", selection: $selectedModel) {
+                    ForEach(aiModels, id: \.self) { model in
+                        Text(model.title)
                     }
-                } label: {
-                    Label("Model types", systemImage: "brain")
-                }
-
-                Button(action: {
-                    showHistoryView.wrappedValue = true
-                }) {
-                    Label("History", systemImage: "clock.arrow.circlepath")
-                }
-
-                Divider()
-
-                // Why AI
-                Button(action: {
-                    showWhyAISheet.wrappedValue = true
-                }) {
-                    Label("Why AI?", systemImage: "sparkles")
                 }
             } label: {
-                Button(
-                    "Menu",
-                    systemImage: "line.3.horizontal",
-                    action: {
-                    }
-                )
+                Label("Model types", systemImage: "brain")
+            }
+
+            Button(action: {
+                showHistoryView = true
+            }) {
+                Label("History", systemImage: "clock.arrow.circlepath")
+            }
+
+            Divider()
+
+            Button(action: {
+                showWhyAISheet = true
+            }) {
+                Label("Why AI?", systemImage: "sparkles")
+            }
+        } label: {
+            Button("Menu", systemImage: "line.3.horizontal", action: {})
                 .labelStyle(.iconOnly)
                 .frame(width: 50, height: 50)
-            }
-            .menuOrder(.priority)
-            .buttonStyle(.plain)
-            .glassEffect(.regular.interactive())
         }
+        .menuOrder(.priority)
+        .buttonStyle(.plain)
+        .glassEffect(.regular.interactive())
     }
 }
 

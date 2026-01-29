@@ -9,64 +9,78 @@ import SwiftUI
 
 struct HistoryView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var noEntries: Bool = false
+    @Environment(HomeViewModel.self) private var viewModel
+    
+    @State private var showPromptHistory: Bool = false
+    @State private var selectedHistory: HistoryModel?
 
     var body: some View {
         NavigationStack {
-            if noEntries {
-                emptyContentView
-            } else {
-                contentView
-            }
-        }
-    }
+            Group {
+                if viewModel.history.isEmpty {
+                    ContentUnavailableView(
+                        "No History",
+                        systemImage: "clock.arrow.circlepath",
+                        description: Text("Your conversation history will appear here")
+                    )
+                } else {
+                    List {
+                        ForEach(viewModel.history) { convo in
+                            Button(action: {
+                                selectedHistory = convo
+                                showPromptHistory = true
+                            }) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Prompt \(convo.id)")
+                                        .bold()
 
-    var contentView: some View {
-        List {
-            ForEach(1..<21, id: \.self) { i in
-                NavigationLink(value: i) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Prompt \(i)")
-                            .bold()
-                        Text("Description of prompt \(i)")
-                            .foregroundStyle(.secondary)
+                                    Group {
+                                        Text(convo.prompt)
+                                            .frame(maxWidth: .infinity, alignment: .trailing)
+                                            .bold()
+                                            .padding(.leading)
+
+                                        Text(convo.response)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(.trailing)
+                                    }
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(3)
+                                }
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(.rect(cornerRadius: 12, style: .continuous))
+                                .contentShape(.rect(cornerRadius: 12, style: .continuous))
+                                .listRowInsets(.init(top: 6, leading: 12, bottom: 6, trailing: 12))
+                            }
+                            .listRowSeparator(.hidden)
+                        }
                     }
+                    .listStyle(.plain)
                 }
-                .padding()
-                .background(.ultraThinMaterial)
-                .clipShape(.rect(cornerRadius: 12, style: .continuous))
-                .contentShape(.rect(cornerRadius: 12, style: .continuous))
-                .listRowInsets(.init(top: 6, leading: 12, bottom: 0, trailing: 6))
-                .listRowSeparator(.hidden)
+            }
+            .navigationTitle("History")
+            .sheet(isPresented: $showPromptHistory) {
+                if let history = selectedHistory {
+                    NavigationStack {
+                        PromptHistoryDetailView(history: history)
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button("Done") {
+                                        showPromptHistory = false
+                                    }
+                                }
+                            }
+                    }
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+                }
             }
         }
-        .navigationTitle(Text("History"))
-//        .navigationDestination(for: Int.self) { promptNumber in
-//            PromptDetailView(promptNumber: promptNumber)
-//        }
-        .listStyle(.plain)
-    }
-
-    var emptyContentView: some View {
-        ContentUnavailableView(
-            label: {
-                Label("No history yet", systemImage: "book")
-            },
-            description: {
-                Text("Seems there is nothing here yet. Go back and type your thoughts away!")
-            },
-            actions: {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Label("Go back", systemImage: "arrow.left")
-                }
-                .buttonStyle(.borderedProminent)
-            }
-        )
     }
 }
 
 #Preview {
     HistoryView()
+        .environment(HomeViewModel())
 }

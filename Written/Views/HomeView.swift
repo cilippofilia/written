@@ -17,12 +17,12 @@ struct HomeView: View {
     @Environment(CountdownViewModel.self) var countDownViewModel
     @FocusState private var isFocused: Bool
 
-    @State private var text: String  = ""
-    @State private var aiAnswer: String  = ""
+    @State private var text: String = ""
+    @State private var aiAnswer: String = ""
 
     @State private var activeAlert: AlertType?
-    @State private var errorTitle: String? = nil
-    @State private var errorMessage: String? = nil
+    @State private var errorTitle: String?
+    @State private var errorMessage: String?
 
     @State private var showAIGeneratedAnswer: Bool = false
     @State private var showWhyAISheet: Bool = false
@@ -186,12 +186,16 @@ extension HomeView {
 
         do {
             let stream = session.streamResponse(to: input)
+            var fullAnswer: String = ""
             for try await partial in stream {
                 aiAnswer = partial.content
+                fullAnswer = partial.content
                 withAnimation {
                     showAIGeneratedAnswer = true
                 }
             }
+            let history: HistoryModel = HistoryModel(prompt: input, response: .init(fullAnswer))
+            viewModel.history.append(history)
         } catch let error as LanguageModelSession.GenerationError {
             handleGenerationError(error)
         } catch {
