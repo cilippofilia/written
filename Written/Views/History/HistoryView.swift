@@ -25,7 +25,7 @@ struct HistoryView: View {
                     )
                 } else {
                     List {
-                        ForEach(viewModel.history) { convo in
+                        ForEach(viewModel.history.reversed()) { convo in
                             Button(action: {
                                 selectedHistory = convo
                                 showPromptHistory = true
@@ -60,14 +60,25 @@ struct HistoryView: View {
                 }
             }
             .navigationTitle("History")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        viewModel.history = HistoryModel.historyExamples
+                    }) {
+                        Label("Add sample data", systemImage: "book.badge.plus")
+                    }
+                }
+            }
             .sheet(isPresented: $showPromptHistory) {
                 if let history = selectedHistory {
                     NavigationStack {
                         PromptHistoryDetailView(history: history)
                             .toolbar {
                                 ToolbarItem(placement: .topBarTrailing) {
-                                    Button("Done") {
+                                    Button(action: {
                                         showPromptHistory = false
+                                    }) {
+                                        Label("Done", systemImage: "xmark")
                                     }
                                 }
                             }

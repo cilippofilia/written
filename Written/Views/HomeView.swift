@@ -30,6 +30,7 @@ struct HomeView: View {
     @State private var showOverlayView: Bool = false
 
     @State private var shouldSend: Bool = false
+    @State private var isDisabled: Bool = true
 
     var body: some View {
         NavigationStack {
@@ -74,18 +75,32 @@ struct HomeView: View {
                     .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showAIGeneratedAnswer) {
-                AIGeneratedAnswerView(answer: aiAnswer)
-                    .background(.ultraThinMaterial)
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-                    .transition(.opacity)
-                    .onAppear {
-                        showOverlayView = false
-                    }
-                    .onDisappear {
-                        viewModel.session = nil
-                        text = ""
-                    }
+                NavigationStack {
+                    AIGeneratedAnswerView(answer: aiAnswer)
+                        .background(.ultraThinMaterial)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
+                        .transition(.opacity)
+                        .onAppear {
+                            showOverlayView = false
+                        }
+                        .onDisappear {
+                            viewModel.session = nil
+                            text = ""
+                        }
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button(action: {
+                                    showAIGeneratedAnswer = false
+                                }) {
+                                    Label("Done", systemImage: "xmark")
+                                }
+                                .disabled(isDisabled)
+                            }
+                        }
+                }
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
             .navigationDestination(isPresented: $showHistoryView) {
                 HistoryView()
@@ -196,6 +211,7 @@ extension HomeView {
             }
             let history: HistoryModel = HistoryModel(prompt: input, response: .init(fullAnswer))
             viewModel.history.append(history)
+            isDisabled = false
         } catch let error as LanguageModelSession.GenerationError {
             handleGenerationError(error)
         } catch {
