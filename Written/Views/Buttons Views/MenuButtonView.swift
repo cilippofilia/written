@@ -15,12 +15,10 @@ struct MenuButtonView: View {
 
     var body: some View {
         Menu {
+            // TODO: ideas to implement
             Label("Onboarding", systemImage: "book.pages")
 
             Menu {
-                // TODO: ideas to implement
-                Label("Onboarding", systemImage: "book.pages")
-
                 Picker("", selection: $selectedModel) {
                     ForEach(aiModels, id: \.self) { model in
                         Text(model.title)
@@ -44,7 +42,7 @@ struct MenuButtonView: View {
                 Label("Why AI?", systemImage: "sparkles")
             }
         } label: {
-            Button("Menu", systemImage: "line.3.horizontal", action: {})
+            Label("Menu", systemImage: "line.3.horizontal")
                 .labelStyle(.iconOnly)
                 .frame(width: 50, height: 50)
         }
